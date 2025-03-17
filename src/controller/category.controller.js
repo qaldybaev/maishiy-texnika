@@ -2,7 +2,17 @@ const { query } = require("../database/pg")
 
 exports.getAllCategory = async function (req, res) {
     try {
-        const category = await query('SELECT * FROM category')
+        const category = await query(`SELECT c.id AS category_id,
+                c.name AS category_name, json_agg(json_build_object(
+                        'id', p.id , 
+                        'name', p.name, 
+                        'price', p.price, 
+                        'count', p.count
+                    )) AS products
+            FROM category c
+            LEFT JOIN products p ON p.category_id = c.id
+            GROUP BY c.name,c.id 
+            ORDER BY c.id`)
 
         res.status(200).send({
             message: "Barcha kategoriyalar",

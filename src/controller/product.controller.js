@@ -2,19 +2,7 @@ const { query } = require("../database/pg")
 
 exports.getAllProducts = async function (req, res) {
     try {
-        const products = await query(`
-            SELECT c.id AS category_id,
-                c.name AS category_name, json_agg(json_build_object(
-                        'id', p.id , 
-                        'name', p.name, 
-                        'price', p.price, 
-                        'count', p.count
-                    )) AS products
-            FROM category c
-            LEFT JOIN products p ON p.category_id = c.id
-            GROUP BY c.name,c.id 
-            ORDER BY c.id
-        `);
+        const products = await query(`Select * from products`);
 
         res.json(products);
     } catch (error) {
